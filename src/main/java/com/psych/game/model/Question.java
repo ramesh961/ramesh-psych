@@ -12,6 +12,14 @@ import java.util.Set;
 @Table(name="question")
 public class Question extends Auditable{
 
+    public Question(){}
+
+    public Question(String question, String correctAnswer, GameMode gameMode) {
+        this.question = question;
+        this.correctAnswer = correctAnswer;
+        this.gameMode = gameMode;
+    }
+
     @Getter
     @Setter
     @NotNull

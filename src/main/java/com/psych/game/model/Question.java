@@ -1,5 +1,6 @@
 package com.psych.game.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class Question extends Auditable{
     @Getter
     @Setter
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
     @NotNull
     private Set<EllenAnswer> ellenAnswers = new HashSet<>();
 

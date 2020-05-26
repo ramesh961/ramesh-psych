@@ -27,6 +27,14 @@ public abstract class User extends Auditable {
 
     @Getter
     @Setter
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles= new HashSet<>();
+
+    public User(){}
+
+    public User(User user) {
+        email= user.email;
+        saltedHashedPassword=user.saltedHashedPassword;
+        roles=user.getRoles();
+    }
 }

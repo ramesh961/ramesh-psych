@@ -1,4 +1,4 @@
-package com.psych.game;
+package com.psych.game.controller;
 
 import com.psych.game.model.*;
 import com.psych.game.repositories.*;
@@ -12,7 +12,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/dev-test")
-public class HelloWorldController {
+public class DevTestController {
 
     @Autowired
     private PlayerRepository playerRepository;
@@ -24,6 +24,8 @@ public class HelloWorldController {
     private RoundRepository roundRepository;
     @Autowired
     private PlayerAnswerRepository playerAnswerRepository;
+    @Autowired
+    private UserRepository userRepository;
     @GetMapping("/")
     String hello(){
         return "Hello World";
@@ -204,5 +206,10 @@ public class HelloWorldController {
     @GetMapping("/playerAnswers")
     public List<PlayerAnswer> getAllPlayerAnswers(){
         return playerAnswerRepository.findAll();
+    }
+
+    @GetMapping("/users")
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 }

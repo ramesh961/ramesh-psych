@@ -2,6 +2,7 @@ package com.psych.game.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.psych.game.exceptions.InvalidGameActionException;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,46 @@ public class Round extends Auditable {
     @NotNull
     private int roundNumber;
 
+    public Round(){}
+
+    public Round(Game game, Question question, int roundNumber) {
+        this.game = game;
+        this.question = question;
+        this.roundNumber = roundNumber;
+    }
+
+    public void submitAnswer(Player player,String answer) throws InvalidGameActionException {
+
+        if(playerAnswers.containsKey(player))
+            throw new InvalidGameActionException("player has already submitted the answer");
+        for(PlayerAnswer playerAnswer:playerAnswers.values()){
+            if(playerAnswer.getPlayerAnswer().equals(answer))
+                throw new InvalidGameActionException("duplicate answer!");
+        }
+        playerAnswers.put(player,new PlayerAnswer(answer,player,this));
+    }
+
+    public boolean allAnswersSubmitted(int playerSize){
+        return playerAnswers.size()== playerSize;
+    }
+
+    public void selectAnswer(Player player, PlayerAnswer selectedAnswer) throws InvalidGameActionException {
+
+
+        if(selectedAnswers.containsKey(player))
+            throw new InvalidGameActionException("player has already selected the answer");
+        if(selectedAnswer.getPlayer().equals(player))
+            throw new InvalidGameActionException("you cannot select your own answer");
+        selectedAnswers.put(player,selectedAnswer);
+    }
+
+
+    public boolean allAnswersSelected(int playerSize) {
+        return playerAnswers.size()==playerSize;
+    }
+
+
+
     private Round(Builder builder) {
         setQuestion(builder.question);
         setPlayerAnswers(builder.playerAnswers);
@@ -56,7 +97,6 @@ public class Round extends Auditable {
         setRoundNumber(builder.roundNumber);
     }
 
-    public Round(){}
     public static final class Builder {
         private Question question;
         private Map<Player, PlayerAnswer> playerAnswers;
@@ -65,6 +105,7 @@ public class Round extends Auditable {
 
         public Builder() {
         }
+
 
         public Builder question(Question val) {
             question = val;

@@ -52,6 +52,11 @@ public class Player extends User {
         setPicURL(builder.picURL);
     }
 
+    public Game getCurrentGame() {
+        //todo
+        return null;
+    }
+
     public static final class Builder {
         private @NotBlank @Email String email;
         private @NotBlank String saltedHashedPassword;

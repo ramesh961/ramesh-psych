@@ -33,6 +33,12 @@ public class PlayerAnswer extends Auditable {
 
     public PlayerAnswer(){}
 
+    public PlayerAnswer(String playerAnswer, Player player, Round round) {
+        this.playerAnswer = playerAnswer;
+        this.player = player;
+        this.round = round;
+    }
+
     private PlayerAnswer(Builder builder) {
         setPlayerAnswer(builder.playerAnswer);
         setPlayer(builder.player);

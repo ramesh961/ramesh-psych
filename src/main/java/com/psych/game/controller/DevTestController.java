@@ -131,49 +131,50 @@ public class DevTestController {
                 GameMode.IS_THIS_A_FACT
         );
         questionRepository.save(question2);
-
-        Game game1 = new Game.Builder()
-                .leader(Ramesh)
-                .players(new HashSet<>(Arrays.asList(Ramesh,Monica,Gayathri)))
-                .hasEllen(true)
-                .round(5)
-                .gameMode(GameMode.IS_THIS_A_FACT)
-                .build();
+        Game game1= new Game(GameMode.IS_THIS_A_FACT,true,10,Ramesh);
         gameRepository.save(game1);
-
-        PlayerAnswer rameshAnswer = new PlayerAnswer.Builder().
-                player(Ramesh).
-                playerAnswer("Large Sofa")
-                .build();
-        playerAnswerRepository.save(rameshAnswer);
-        PlayerAnswer monicaAnswer = new PlayerAnswer.Builder().
-                player(Monica).
-                playerAnswer("Mirror")
-                .build();
-
-        playerAnswerRepository.save(monicaAnswer);
-        PlayerAnswer gayathriAnswer = new PlayerAnswer.Builder().
-                player(Gayathri).
-                playerAnswer("Flower vase")
-                .build();
-
-        playerAnswerRepository.save(gayathriAnswer);
-        Map<Player,PlayerAnswer> playerAnswers1= new HashMap<>(){
-            {
-                put(Ramesh, rameshAnswer);
-                put(Monica, monicaAnswer);
-                put(Gayathri, gayathriAnswer);
-            }};
-        //playerAnswerRepository.save(playerAnswers1);
-        Round round1= new Round.Builder()
-                .roundNumber(1)
-                .question(question2)
-                .playerAnswers(playerAnswers1)
-                .build();
-        roundRepository.save(round1);
-
-
-        return "populated";
+//        Game game1 = new Game.Builder()
+//                .leader(Ramesh)
+//                .players(new HashSet<>(Arrays.asList(Ramesh,Monica,Gayathri)))
+//                .hasEllen(true)
+//                .round(5)
+//                .gameMode(GameMode.IS_THIS_A_FACT)
+//                .build();
+//        gameRepository.save(game1);
+//
+//        PlayerAnswer rameshAnswer = new PlayerAnswer.Builder().
+//                player(Ramesh).
+//                playerAnswer("Large Sofa")
+//                .build();
+//        playerAnswerRepository.save(rameshAnswer);
+//        PlayerAnswer monicaAnswer = new PlayerAnswer.Builder().
+//                player(Monica).
+//                playerAnswer("Mirror")
+//                .build();
+//
+//        playerAnswerRepository.save(monicaAnswer);
+//        PlayerAnswer gayathriAnswer = new PlayerAnswer.Builder().
+//                player(Gayathri).
+//                playerAnswer("Flower vase")
+//                .build();
+//
+//        playerAnswerRepository.save(gayathriAnswer);
+//        Map<Player,PlayerAnswer> playerAnswers1= new HashMap<>(){
+//            {
+//                put(Ramesh, rameshAnswer);
+//                put(Monica, monicaAnswer);
+//                put(Gayathri, gayathriAnswer);
+//            }};
+//        //playerAnswerRepository.save(playerAnswers1);
+//        Round round1= new Round.Builder()
+//                .roundNumber(1)
+//                .question(question2)
+//                .playerAnswers(playerAnswers1)
+//                .build();
+//        roundRepository.save(round1);
+//
+//
+       return "populated";
     }
 
     @GetMapping("/questions")

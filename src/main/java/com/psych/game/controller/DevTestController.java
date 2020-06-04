@@ -26,6 +26,9 @@ public class DevTestController {
     private PlayerAnswerRepository playerAnswerRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GameModeRepository gameModeRepository;
+
     @GetMapping("/")
     String hello(){
         return "Hello World";
@@ -35,12 +38,17 @@ public class DevTestController {
     public String populateDB(){
 
 
+        for(Player player:playerRepository.findAll()){
+            player.setGames(null);
+            player.setCurrentGame(null);
+            playerRepository.save(player);
+        }
         gameRepository.deleteAll();
-
         roundRepository.deleteAll();
         playerAnswerRepository.deleteAll();
         questionRepository.deleteAll();
         playerRepository.deleteAll();
+        gameModeRepository.deleteAll();
         Player Ramesh = new Player.Builder()
                 .alias("Ram")
                 .email("ramesh@gmail.com")
@@ -76,51 +84,14 @@ public class DevTestController {
                 .build();
         playerRepository.save(Seeta);
 
-
-        /* Sai = new Player.Builder()
-                .alias("Sai")
-                .email("sai@gmail.com")
-                .saltedHashedPassword("Sai96")
-                .build();
-        // playerRepository.save(Arun);
-
-        Player Krishna = new Player.Builder()
-                .alias("Krishna")
-                .email("krishna@gmail.com")
-                .saltedHashedPassword("Krishna@1996")
-                .build();
-        //playerRepository.save(Gayathri);
-
-        Player Suresh = new Player.Builder()
-                .alias("Suri")
-                .email("suresh@gmail.com")
-                .saltedHashedPassword("Suresh@1996")
-                .build();
-        // playerRepository.save(Monica);
-        Player Siva = new Player.Builder()
-                .alias("siva")
-                .email("siva@gmail.com")
-                .saltedHashedPassword("Siva96")
-                .build();
-        // playerRepository.save(Arun);
-
-        Player Mahesh = new Player.Builder()
-                .alias("Mahesh")
-                .email("mahesh@gmail.com")
-                .saltedHashedPassword("Mahesh@1996")
-                .build();
-        //playerRepository.save(Gayathri);
-
-        Player Sumanth = new Player.Builder()
-                .alias("Sumanth")
-                .email("sumanth@gmail.com")
-                .saltedHashedPassword("Sumanth@1996")
-                .build();
-    */
+        GameMode isThisAFact= new GameMode("IS_THIS_A_FACT","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","Is this a fact description");
+        gameModeRepository.save(isThisAFact);
+        gameModeRepository.save(new GameMode("WORD_UP","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","word up description"));
+        gameModeRepository.save(new GameMode("MOVIEBUFF","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","movie buff description"));
         Question question1= new Question(
                 "what is the vey important poneglyph",
                 "Rio poneglyph",
-                GameMode.IS_THIS_A_FACT
+                 isThisAFact
         );
        questionRepository.save(question1);
 
@@ -128,52 +99,13 @@ public class DevTestController {
                 "if Gayathri were IKEA's furniture," +
                         "what is it called? ",
                 "Flower vase",
-                GameMode.IS_THIS_A_FACT
+                isThisAFact
         );
         questionRepository.save(question2);
-        Game game1= new Game(GameMode.IS_THIS_A_FACT,true,10,Ramesh);
+
+        Game game1= new Game(isThisAFact,true,10,Ramesh);
         gameRepository.save(game1);
-//        Game game1 = new Game.Builder()
-//                .leader(Ramesh)
-//                .players(new HashSet<>(Arrays.asList(Ramesh,Monica,Gayathri)))
-//                .hasEllen(true)
-//                .round(5)
-//                .gameMode(GameMode.IS_THIS_A_FACT)
-//                .build();
-//        gameRepository.save(game1);
-//
-//        PlayerAnswer rameshAnswer = new PlayerAnswer.Builder().
-//                player(Ramesh).
-//                playerAnswer("Large Sofa")
-//                .build();
-//        playerAnswerRepository.save(rameshAnswer);
-//        PlayerAnswer monicaAnswer = new PlayerAnswer.Builder().
-//                player(Monica).
-//                playerAnswer("Mirror")
-//                .build();
-//
-//        playerAnswerRepository.save(monicaAnswer);
-//        PlayerAnswer gayathriAnswer = new PlayerAnswer.Builder().
-//                player(Gayathri).
-//                playerAnswer("Flower vase")
-//                .build();
-//
-//        playerAnswerRepository.save(gayathriAnswer);
-//        Map<Player,PlayerAnswer> playerAnswers1= new HashMap<>(){
-//            {
-//                put(Ramesh, rameshAnswer);
-//                put(Monica, monicaAnswer);
-//                put(Gayathri, gayathriAnswer);
-//            }};
-//        //playerAnswerRepository.save(playerAnswers1);
-//        Round round1= new Round.Builder()
-//                .roundNumber(1)
-//                .question(question2)
-//                .playerAnswers(playerAnswers1)
-//                .build();
-//        roundRepository.save(round1);
-//
-//
+
        return "populated";
     }
 

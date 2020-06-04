@@ -1,5 +1,6 @@
 package com.psych.game.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.Getter;
@@ -43,6 +44,6 @@ public class Question extends Auditable{
 
     @Getter
     @Setter
-    @Enumerated(EnumType.STRING)
+    @JsonIdentityReference
     private GameMode gameMode;
 }

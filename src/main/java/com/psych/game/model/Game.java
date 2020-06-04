@@ -9,6 +9,8 @@ import com.psych.game.exceptions.InvalidGameActionException;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.hibernate.engine.internal.Cascade;
 import org.hibernate.loader.plan.build.internal.spaces.JoinImpl;
 
@@ -31,13 +33,15 @@ public class Game extends Auditable {
     @Getter
     @Setter
     @JsonManagedReference
+    @OrderBy(value="round_number asc")
     @OneToMany(mappedBy = "game",cascade=CascadeType.ALL)
     private List<Round> rounds = new ArrayList<>();
 
     @Getter
     @Setter
     @NotNull
-    @Enumerated(EnumType.STRING)
+    @ManyToOne   /// also check one game can also have multiple game modes, in b/w i can change gamemode
+    @JsonIdentityReference
     private GameMode gameMode;
 
     @Getter
@@ -71,6 +75,7 @@ public class Game extends Auditable {
     @ManyToMany
     private Set<Player> readyPlayers;
 
+
     public Game(){}
     public Game(GameMode gameMode, Boolean hasEllen, int numRound, Player leader) {
         this.gameMode = gameMode;
@@ -78,6 +83,7 @@ public class Game extends Auditable {
         this.numRound = numRound;
         this.leader = leader;
         players.add(leader);
+        this.leader.setCurrentGame(this);
     }
 
 
@@ -85,11 +91,14 @@ public class Game extends Auditable {
         if(!gameStatus.equals(GameStatus.PLAYERS_JOINING))
             throw new InvalidGameActionException("game is already started");
         players.add(player);
+        player.setCurrentGame(this);
     }
     public void removePlayer(Player player) throws Exception{
         if(!players.contains(player))
             throw new InvalidGameActionException("player is not in the game");
         players.remove(player);
+        if(player.getCurrentGame().equals(this))
+            player.setCurrentGame(null);
         if( (players.size()==0) || ( players.size()==1 && !gameStatus.equals(GameStatus.PLAYERS_JOINING)))
             endGame(leader);
             
@@ -100,6 +109,10 @@ public class Game extends Auditable {
             throw new InvalidGameActionException("only leader is allowed to end the game");
         }
         gameStatus=GameStatus.ENDED;
+        for(Player eachPlayer:players){
+            if(eachPlayer.getCurrentGame().equals(this))
+                eachPlayer.setCurrentGame(null);
+        }
     }
 
     public void startGame(Player player) throws InvalidGameActionException {
@@ -178,6 +191,23 @@ public class Game extends Auditable {
          readyPlayers.remove(player);
 
      }
+
+
+    public JSONObject getGameState(){
+        JSONObject state= new JSONObject();
+        state.put("id",getId());
+        state.put("rounds",getNumRound());
+        state.put("gameMode",getGameMode().getName());
+        JSONArray playerData= new JSONArray();
+        for(Player gamePlayer: getPlayers()){
+            JSONObject player = new JSONObject();
+            player.put("playerAlias",gamePlayer.getAlias());
+            playerData.add(player);
+        }
+        state.put("players",playerData);
+        return state;
+    }
+
 
 
 

@@ -41,20 +41,19 @@ public class Player extends User {
     @OneToOne(cascade=CascadeType.ALL)
     private Stat stats= new Stat();
 
-    public Player(){
+    @Getter
+    @Setter
+    @ManyToOne
+    private Game currentGame;
 
-    }
+
+    public Player(){   }
     private Player(Builder builder) {
         setEmail(builder.email);
         setSaltedHashedPassword(builder.saltedHashedPassword);
         setAlias(builder.alias);
         setPsychFaceURL(builder.psychFaceURL);
         setPicURL(builder.picURL);
-    }
-
-    public Game getCurrentGame() {
-        //todo
-        return null;
     }
 
     public static final class Builder {
@@ -96,5 +95,8 @@ public class Player extends User {
             return new Player(this);
         }
     }
+
 }
+
+    
 //playerid gameid

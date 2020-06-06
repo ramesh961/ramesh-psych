@@ -1,5 +1,7 @@
 package com.psych.game.controller;
 
+import com.psych.game.Constants;
+import com.psych.game.Utils;
 import com.psych.game.model.*;
 import com.psych.game.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ public class DevTestController {
     }
 
     @GetMapping("/populate")
-    public String populateDB(){
+    public String populateDB() throws Exception {
 
 
         for(Player player:playerRepository.findAll()){
@@ -84,28 +86,43 @@ public class DevTestController {
                 .build();
         playerRepository.save(Seeta);
 
-        GameMode isThisAFact= new GameMode("IS_THIS_A_FACT","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","Is this a fact description");
+        GameMode isThisAFact= new GameMode("IS_THIS_A_FACT?","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","Is this a fact description");
         gameModeRepository.save(isThisAFact);
-        gameModeRepository.save(new GameMode("WORD_UP","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","word up description"));
-        gameModeRepository.save(new GameMode("MOVIEBUFF","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","movie buff description"));
-        Question question1= new Question(
-                "what is the vey important poneglyph",
-                "Rio poneglyph",
-                 isThisAFact
-        );
-       questionRepository.save(question1);
+        gameModeRepository.save(new GameMode("WORD UP","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","word up description"));
+        gameModeRepository.save(new GameMode("Un-Scramble","https://img.republicworld.com/republic-prod/stories/promolarge/xxhdpi/lnga5ufojt04dzqv_1585003042.jpeg?tr=w-812,h-464","movie buff description"));
+//        Question question1= new Question(
+//                "what is the vey important poneglyph",
+//                "Rio poneglyph",
+//                 isThisAFact
+//        );
+//       questionRepository.save(question1);
+//
+//        Question question2= new Question(
+//                "if Gayathri were IKEA's furniture," +
+//                        "what is it called? ",
+//                "Flower vase",
+//                isThisAFact
+//        );
+//        questionRepository.save(question2);
 
-        Question question2= new Question(
-                "if Gayathri were IKEA's furniture," +
-                        "what is it called? ",
-                "Flower vase",
-                isThisAFact
-        );
-        questionRepository.save(question2);
+
+
+        List<Question> questions = new ArrayList<>();
+        for(Map.Entry<String,String> qaFile : Constants.QA_FILES.entrySet()){
+            System.out.println("game Mode "+qaFile.getValue());
+            GameMode gameMode= gameModeRepository.findByName(qaFile.getValue()).orElseThrow();
+            for(Map.Entry<String,String> questionAnswer : Utils.readDataFromFile(qaFile.getKey()).entrySet()){
+                questions.add(new Question(questionAnswer.getKey(),questionAnswer.getValue(),gameMode));
+            }
+        }
+        questionRepository.saveAll(questions);
 
         Game game1= new Game(isThisAFact,true,10,Ramesh);
+        game1.addPlayer(Arun);
         gameRepository.save(game1);
 
+        game1.startGame(Ramesh);
+        gameRepository.save(game1);
        return "populated";
     }
 

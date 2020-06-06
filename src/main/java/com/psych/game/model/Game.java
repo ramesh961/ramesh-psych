@@ -84,6 +84,7 @@ public class Game extends Auditable {
         this.leader = leader;
         players.add(leader);
         this.leader.setCurrentGame(this);
+        this.gameStatus=GameStatus.PLAYERS_JOINING;
     }
 
 
@@ -129,10 +130,11 @@ public class Game extends Auditable {
     private void startNewRound() {
         Question question = Utils.getRandomQuestion(gameMode);
         Round newRound= new Round(this, question,rounds.size()+1);
-        rounds.add(newRound);
+
         if(hasEllen){
             newRound.setEllenAnswer(Utils.getRandomEllenAnswer(question));
         }
+        rounds.add(newRound);
         gameStatus= GameStatus.SUBMITTING_ANSWERS;
 
     }
@@ -147,6 +149,8 @@ public class Game extends Auditable {
         // duplicate answers check
         // if already submitted, he cannot submit
         Round currentRound= getCurrentRound(); /// current round
+        System.out.println(" game id "+this.getId());
+        System.out.println(" round no "+currentRound.getRoundNumber());
         currentRound.submitAnswer(player,answer);
         if(currentRound.allAnswersSubmitted(players.size()) )
             gameStatus= GameStatus.SELECTING_ANSWERS;

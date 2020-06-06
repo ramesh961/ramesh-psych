@@ -12,4 +12,9 @@ public class GamePlayService {
         return "index.html";
     }
 
+    @RequestMapping("join")
+    public String joinGame(){
+        return "joinGame.html";
+    }
+
 }

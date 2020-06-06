@@ -29,15 +29,25 @@
 
     <div class="personal">
         <div class="profile"> profile </div>
-        <a href='/logout' class="logout">Logout {{playerAlias}}</a>
+        <a href='/logout' class="logout">Logout 1{{playerAlias}}</a>
     </div>
 
-    <div v-if="currentGame">
+    <div v-if="currentGame" v-on:click="joinGame()">
+
         <div class="section">
-            {{gameState.id}}
-            {{gameState.rounds}}
-            {{gameState.gameMode}}
+            <div v-for="player in players" class="join">
+                <div class="name">
+                    {{ player.name }}
+                </div>
+            </div>
         </div>
+
+        <!--        <div class="section">-->
+<!--            {{gameState.id}}-->
+<!--            {{gameState.rounds}}-->
+<!--            {{gameState.gameMode}}-->
+<!--            <a href="/startGame" class="startGame">Start Game</a>-->
+<!--        </div>-->
 
     </div>
     <div v-else>
@@ -102,7 +112,7 @@
 
         },
         mounted: function(){
-                fetch('/play/').then(this.getDataFromResponse);
+                fetch('/play/') .then(this.getDataFromResponse);
         }
 
     })

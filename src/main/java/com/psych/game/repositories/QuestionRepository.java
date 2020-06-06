@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question,Long> {
-    @Query(value = "SELECT * from question WHERE GameMode=:gameMode ORDER BY RANDOM LIMIT 1",nativeQuery = true)
-    Question getRandomQuestion(GameMode gameMode);
+    @Query(value = "SELECT * from questions WHERE game_mode_id=:gameModeId ORDER BY RANDOM() LIMIT 1",nativeQuery = true)
+    Question getRandomQuestion(Long gameModeId);
 }

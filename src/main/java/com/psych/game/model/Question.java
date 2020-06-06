@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="question")
+@Table(name="questions")
 public class Question extends Auditable{
 
     public Question(){}
@@ -44,6 +44,8 @@ public class Question extends Auditable{
 
     @Getter
     @Setter
+    @ManyToOne
     @JsonIdentityReference
+    @NotNull
     private GameMode gameMode;
 }

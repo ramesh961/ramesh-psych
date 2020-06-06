@@ -27,7 +27,7 @@ public class GamePlayController {
     @Autowired
     private GameRepository gameRepository;
 
-    public Player getPlayerInfo(Authentication authentication){
+    public Player getCurrentPlayer(Authentication authentication){
         Player player= playerRepository.findByEmail(authentication.getName()).orElseThrow();
 
         //System.out.println(player.getAlias());
@@ -42,7 +42,7 @@ public class GamePlayController {
                                  @RequestParam(name="mode") String mode,
                                  @RequestParam(name="rounds") Integer numRounds,
                                  @RequestParam(name="hasEllen") Boolean hasEllen){
-        Player leader=  getPlayerInfo(authentication);
+        Player leader=  getCurrentPlayer(authentication);
         GameMode gameMode= gameModeRepository.findByName(mode).orElseThrow();
         gameRepository.save(new Game(gameMode,hasEllen,numRounds,leader));
         return play(authentication);
@@ -53,7 +53,7 @@ public class GamePlayController {
 
     @GetMapping("/")
     public JSONObject play(Authentication authentication){
-        Player player=getPlayerInfo(authentication);
+        Player player=getCurrentPlayer(authentication);
         Game currentGame= player.getCurrentGame();
         JSONObject response= new JSONObject();
         response.put("playerAlias",player.getAlias());
@@ -83,10 +83,51 @@ public class GamePlayController {
     }
 
     @GetMapping("/addPlayer")
-    public void addPlayer(Player player) throws Exception {
-        Game currentGame = new Game(); // current game
-        currentGame.addPlayer(player);
+    public JSONObject addPlayer(Authentication authentication,
+                                @RequestParam(name="gameId") Long gameId) throws Exception {
+        Game currentGame = gameRepository.findById(gameId).orElseThrow();
+        Player joiningPlayer= getCurrentPlayer(authentication);
+        //Game currentGame = new Game(); // current game
+
+        currentGame.addPlayer(joiningPlayer);
+        JSONObject jsonPlayerList= new JSONObject();
+        JSONArray players= new JSONArray();
+        System.out.println("players in the game are");
+        for(Player playerInGame: currentGame.getPlayers()){
+            JSONObject player= new JSONObject();
+            player.put("name",playerInGame.getAlias());
+            System.out.println(playerInGame.getAlias());
+            players.add(player);
+        }
+        jsonPlayerList.put("players",players);
+        return jsonPlayerList;
     }
+
+//    @GetMapping("/start-game")
+//    public String startGame(){
+//
+//    }
+
+
+    @GetMapping("/ram-submit")
+    public String ramSubmit() throws InvalidGameActionException {
+        Player ramesh= playerRepository.findByEmail("ramesh@gmail.com").orElseThrow();
+        System.out.println("player name 1"+ramesh.getAlias());
+        Game game= ramesh.getCurrentGame();
+        System.out.println("game leader "+game.getLeader().getAlias());
+        game.submitAnswer(ramesh,"answer");
+        return "done";
+    }
+    @GetMapping("/arun-submit")
+    public String arunSubmit() throws InvalidGameActionException {
+        Player arun= playerRepository.findByEmail("Arun@gmail.com").orElseThrow();
+        System.out.println("player name 2"+arun.getAlias());
+        Game game= arun.getCurrentGame();
+        System.out.println("game leader "+game.getLeader().getAlias());
+        game.submitAnswer(arun,"answer");
+        return "done";
+    }
+
 
     @GetMapping("/submitAnswer/{answer}")
     public void submitAnswer(Authentication authentication,@PathVariable(name="answer") String answer) throws InvalidGameActionException {
@@ -101,7 +142,8 @@ public class GamePlayController {
     }
 
     @GetMapping("/startGame")
-    public void startGame(Player player) throws InvalidGameActionException {
+    public void startGame(Authentication authentication) throws InvalidGameActionException {
+        Player player= getCurrentPlayer(authentication);
         player.getCurrentGame().startGame(player);
     }
 

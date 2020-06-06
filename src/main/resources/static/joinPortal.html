@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Joining Game</title>
+</head>
+<body>
+
+
+<div id="app">
+
+    <div class="section">
+        <div v-for="player in players" class="join">
+            <div class="name">
+                {{ player.name }}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    window.app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            players:{}
+        },
+        methods:{
+
+        },
+        mounted:{
+
+        }
+
+
+    })
+
+
+
+
+</script>
+</body>
+</html>

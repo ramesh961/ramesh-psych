@@ -1,11 +1,14 @@
 package com.psych.game.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.psych.game.exceptions.InvalidGameActionException;
+import com.psych.game.repositories.PlayerAnswerRepository;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -16,6 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name="rounds")
 public class Round extends Auditable {
+
     @Getter
     @Setter
     @ManyToOne
@@ -27,10 +31,12 @@ public class Round extends Auditable {
     @Setter
     @NotNull
     @ManyToOne
+    @JsonIdentityReference
     private Question question;
 
     @Getter
     @Setter
+    @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL)
     private Map<Player,PlayerAnswer> playerAnswers = new HashMap<>();
 
@@ -43,6 +49,7 @@ public class Round extends Auditable {
     @Getter
     @Setter
     @ManyToOne
+    @JsonIdentityReference
     private EllenAnswer ellenAnswer;
 
     @Getter
@@ -67,6 +74,11 @@ public class Round extends Auditable {
                 throw new InvalidGameActionException("duplicate answer!");
         }
         playerAnswers.put(player,new PlayerAnswer(answer,player,this));
+        System.out.println(" player answer is created");
+        for(Map.Entry<Player,PlayerAnswer> answers: playerAnswers.entrySet()){
+            System.out.println("player name "+answers.getKey().getAlias());
+            System.out.println("player answer "+answers.getValue().getPlayerAnswer());
+        }
     }
 
     public boolean allAnswersSubmitted(int playerSize){

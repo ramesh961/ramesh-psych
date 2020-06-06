@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Joining</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+
+<div > hello macha  ijhihu tsfjhabskdjfhbaksjfhgs hihgyh< /div>
+    <div class="section"  >
+        <div class="title">Join the Game</div>
+        <label for ="gameId" > Enter the Code Here  </label>
+        <input type="number" id="gameId">
+        <button type="button" v-on:click="joinGame()">Join Game</button>
+    </div>
+
+    <div class="section">
+        <div v-for="player in players" class="join">
+            <div class="name">
+                {{ player.name }}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    window.app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            gameId:'',
+            players:{}
+        },
+        methods:{
+
+            joinGame: function(){
+                let self= this;
+                self.gameId    = document.getElementById("gameId").value;
+                console.log(self.gameId)
+                fetch('/play/addPlayer?' + new URLSearchParams({
+                    gameId : self.gameId,
+                })).then(this.getDataFromResponse);
+            },
+            getDataFromResponse : function(response) {
+                let self = this;
+                response.json().then(function (data) {
+                    for (let key in data) {
+                        self[key] = data[key]
+                    }
+                    console.log("palyers are ")
+                    for (let player in self.players) {
+                        console.log(player.name)
+                    }
+                    console.log(self.players)
+                })
+            }
+        },
+        mounted:{
+
+        }
+
+
+    })
+
+
+</script>
+
+
+</body>
+</html>

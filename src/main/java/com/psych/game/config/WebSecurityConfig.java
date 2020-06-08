@@ -21,11 +21,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             http.
                     authorizeRequests()
-                    .antMatchers("/dev-test/populate").permitAll()
-                    .antMatchers("/dev-test/games").authenticated()
-                    .antMatchers("/dev-test/players").permitAll()
-                    .antMatchers("/play/*").authenticated()
-                    .anyRequest().authenticated()
+                    .antMatchers("/dev-test/*").permitAll()
+                    .antMatchers("/play").authenticated()
+                    .antMatchers("/").authenticated()
+                    .anyRequest().permitAll()
                     .and().formLogin().permitAll()
                     .and().logout().permitAll();
     }

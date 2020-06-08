@@ -149,8 +149,6 @@ public class Game extends Auditable {
         // duplicate answers check
         // if already submitted, he cannot submit
         Round currentRound= getCurrentRound(); /// current round
-        System.out.println(" game id "+this.getId());
-        System.out.println(" round no "+currentRound.getRoundNumber());
         currentRound.submitAnswer(player,answer);
         if(currentRound.allAnswersSubmitted(players.size()) )
             gameStatus= GameStatus.SELECTING_ANSWERS;

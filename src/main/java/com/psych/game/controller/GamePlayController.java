@@ -112,19 +112,17 @@ public class GamePlayController {
     @GetMapping("/ram-submit")
     public String ramSubmit() throws InvalidGameActionException {
         Player ramesh= playerRepository.findByEmail("ramesh@gmail.com").orElseThrow();
-        System.out.println("player name 1"+ramesh.getAlias());
         Game game= ramesh.getCurrentGame();
-        System.out.println("game leader "+game.getLeader().getAlias());
         game.submitAnswer(ramesh,"answer");
+        gameRepository.save(game);
         return "done";
     }
     @GetMapping("/arun-submit")
     public String arunSubmit() throws InvalidGameActionException {
         Player arun= playerRepository.findByEmail("Arun@gmail.com").orElseThrow();
-        System.out.println("player name 2"+arun.getAlias());
         Game game= arun.getCurrentGame();
-        System.out.println("game leader "+game.getLeader().getAlias());
         game.submitAnswer(arun,"answer");
+        gameRepository.save(game);
         return "done";
     }
 

@@ -8,9 +8,13 @@ import com.psych.game.repositories.PlayerAnswerRepository;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
+import java.io.IOException;
+import java.sql.Time;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -65,21 +69,28 @@ public class Round extends Auditable {
         this.roundNumber = roundNumber;
     }
 
-    public void submitAnswer(Player player,String answer) throws InvalidGameActionException {
 
-        if(playerAnswers.containsKey(player))
-            throw new InvalidGameActionException("player has already submitted the answer");
-        for(PlayerAnswer playerAnswer:playerAnswers.values()){
-            if(playerAnswer.getPlayerAnswer().equals(answer))
-                throw new InvalidGameActionException("duplicate answer!");
+      public void submitAnswer(Player player,String answer) throws InvalidGameActionException {
+          synchronized(this.getId()){
+              if(playerAnswers.containsKey(player))
+                  throw new InvalidGameActionException("player has already submitted the answer");
+              for(PlayerAnswer playerAnswer:playerAnswers.values()){
+                  if(playerAnswer.getPlayerAnswer().equals(answer))
+                      throw new InvalidGameActionException("duplicate answer!");
+              }
+              try {
+                  Thread.sleep(5000);
+              } catch (InterruptedException e) {
+                  e.printStackTrace();
+              }
+
+              playerAnswers.put(player,new PlayerAnswer(answer,player,this));
+          }
+
+
         }
-        playerAnswers.put(player,new PlayerAnswer(answer,player,this));
-        System.out.println(" player answer is created");
-        for(Map.Entry<Player,PlayerAnswer> answers: playerAnswers.entrySet()){
-            System.out.println("player name "+answers.getKey().getAlias());
-            System.out.println("player answer "+answers.getValue().getPlayerAnswer());
-        }
-    }
+
+
 
     public boolean allAnswersSubmitted(int playerSize){
         return playerAnswers.size()== playerSize;

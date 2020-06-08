@@ -45,9 +45,8 @@ public class GamePlayController {
         Player leader=  getCurrentPlayer(authentication);
         GameMode gameMode= gameModeRepository.findByName(mode).orElseThrow();
         gameRepository.save(new Game(gameMode,hasEllen,numRounds,leader));
-        return play(authentication);
+       return play(authentication);
     }
-
 
 
 
